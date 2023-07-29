@@ -1,0 +1,208 @@
+package com.wb.service;
+
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wb.exception.ListNotPresentException;
+import com.wb.exception.OperationHistoryListEmptyexception;
+import com.wb.exception.AdmitListEmptyException;
+import com.wb.exception.EmptyListException;
+import com.wb.exception.ListEmptyException;
+import com.wb.exception.ListNotFoundException;
+import com.wb.model.Admission;
+import com.wb.model.Appointment;
+import com.wb.model.Doctor;
+import com.wb.model.Medicine;
+import com.wb.model.Operation;
+import com.wb.model.PatientLogin;
+import com.wb.model.Prescription;
+import com.wb.repository.AdmissionRepository;
+import com.wb.repository.AppointmentRepository;
+import com.wb.repository.DoctorRepository;
+import com.wb.repository.MedicineRepository;
+import com.wb.repository.OperationRepository;
+import com.wb.repository.PatientLoginRepository;
+import com.wb.repository.PatientRepository;
+import com.wb.repository.PrescriptionRepository;
+
+@Service
+public class PatientServiceIMPL implements PatientService
+{
+	@Autowired
+	private PatientRepository prepo;
+	
+	@Autowired
+	private PatientLoginRepository plrepo;
+	
+	@Autowired
+	private AppointmentRepository arepo;
+
+	@Autowired
+	private PrescriptionRepository prrepo;
+	
+	@Autowired
+	private DoctorRepository drrepo;
+	
+	@Autowired
+	private OperationRepository orepo;
+	
+	@Autowired
+	private AdmissionRepository adrepo;
+	
+	@Autowired
+	private MedicineRepository mrepo;
+	
+	@Override
+	public void insertPatientLoginDetails(PatientLogin plogin)
+	{
+		plrepo.save(plogin);
+	}
+	
+
+	@Override
+	public String patientLogin(String uname, String pwd)
+	{
+		PatientLogin p = plrepo.findByUnameAndPwd(uname, pwd);
+		if(p!=null)
+		return "Logged In Successfully";
+		else
+			return "PatientLoginDetails Not Found";
+	}
+	
+
+	@Override
+	public void save(Appointment appointment)
+	{
+		Random r = new Random();
+		appointment.setAppointment_id(("Appointment Id-"+r.nextInt()));
+		arepo.save(appointment);
+	}
+
+	@Override
+	public List<Appointment> viewAppointmentList() 
+	{
+		List<Appointment> list = arepo.findAll();
+		if(list.isEmpty())
+		{
+			throw new ListNotFoundException();
+		}
+		else
+		{
+		return list;
+		}
+	}
+	
+	@Override
+	public void insert(Doctor doctor)
+	{
+		Random rd = new Random();
+		doctor.setDoctor_id(("Doctor Id:"+rd.nextInt()));
+		drrepo.save(doctor);
+	}
+
+	@Override
+	public List<Doctor> viewDoctorLists() 
+	{
+		List<Doctor> l = drrepo.findAll();
+		if(l.isEmpty())
+		{
+		throw new EmptyListException();
+	    }
+		else
+		{
+		return l;	
+		}
+	}
+	
+	@Override
+	public void insert(Prescription prescriptiondetails) 
+	{
+		Random r1 = new Random();
+		prescriptiondetails.setPrescription_id("PrId:"+r1.nextInt());
+		prrepo.save(prescriptiondetails);
+	}
+
+	@Override
+	public List<Prescription> viewPrDetails() 
+	{
+		List<Prescription> l1 = prrepo.findAll();
+		if(l1.isEmpty())
+		{
+			throw new ListNotPresentException();
+		}
+		else
+		{
+		return l1;
+	    }
+	}
+	
+	@Override
+	public void insertmedicine(Medicine m)
+	{
+		Random rnd = new Random();
+		m.setM_id(("Medicine Id:"+rnd.nextInt()));
+		mrepo.save(m);
+	}
+	
+	@Override
+	public List<Medicine> viewMedication()
+	{
+		List<Medicine> m =  mrepo.findAll();
+		if(m.isEmpty())
+		{
+			throw new ListEmptyException();
+		}
+		else
+		{
+		 return m;
+	    }
+	}
+	
+    @Override
+	public void insertadmithistory(Admission admit)
+    {
+    	Random r4 = new Random();
+    	admit.setId(("Admitted Patient ID:"+r4.nextInt()));
+		adrepo.save(admit);
+		
+	}
+
+    @Override
+	public List<Admission> viewAdmitHistory() 
+	{
+		 List<Admission> lad  = adrepo.findAll();
+		 if(lad.isEmpty())
+		 {
+			 throw new AdmitListEmptyException();
+		 }
+		 else
+		 {
+		 return lad;
+	     }
+	}
+	
+	@Override
+	public void insert(Operation operation)
+	{
+		Random r2 = new Random();
+		operation.setO_id(("Operation ID:"+r2.nextInt()));
+		orepo.save(operation);
+	}
+
+	@Override
+	public List<Operation> viewOperationHistory()
+	{
+		 List<Operation> operation = orepo.findAll();
+		 if(operation.isEmpty())
+		 {
+			 throw new OperationHistoryListEmptyexception();
+		 }
+		 else
+		 {
+			 return operation;
+		 }
+	}
+}
